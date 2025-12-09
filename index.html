@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="script.js" defer></script>
+    <title>Movie Watchlist</title>
+  </head>
+  <!-- 要件定義 -->
+  <!-- - ページは２つだけ。
+  -index.htmlはサーチペイジ、OMDB API titleデサーチして、検索結果を表示する
+  -index.htmlでは、ユーザーがローカルストレージにデータを保存できる。
+  -watchlist.htmlでは、ローカルストレージ保存されたデータを表示する。 -->
+  <!-- 仕様 -->
+  <!-- -tailwindだけを使用する
+  -OMDB APIを使用する
+  -検索バーを作成する
+  -検索結果を表示する
+  -各映画の横に「Watchlistに追加」ボタンを作成する
+  -検索inputはheaderとmainの間の上に配置する。
+  -ダークモードライトモード対応。
+  -サーチページでは初期画面と検索失敗と成功の３つの状態を作成する。
+  -初期画面では、検索バーのみ表示する。
+  -index.htmlのときheaderの右にwatchlist.htmlに移動するリンク.
+  -watchlist.htmlのときheaderの右にindex.htmlに移動するリンク.
+  -watchlist.htmlではローカルストレージに保存された映画を表示する
+    -watchlist.htmlでは各映画の横に「Watchlistから削除」ボタンを作成する
+  -watchlist.htmlではローカルストレージに保存された映画がない場合、「Your watchlist is looking a little empty...」というメッセージを表示する。
+   -->
+  <!-- 設計 -->
+
+  <body class="h-screen flex flex-col">
+    <header
+      class="bg-[url(./images/tyson-moultrie-BQTHOGNHo08-unsplash.jpg)] bg-cover bg-center h-1/4 p-4 flex justify-between items-center"
+    >
+      <h1>Find your film</h1>
+    </header>
+    <main class="h-3/4 bg-gray-500">
+      <section id="search-section" class="p-4">
+        <form id="search-form" class="mb-4">
+          <!--  labelがいる -->
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search for a movie..."
+            class="w-full p-2 border border-gray-300 rounded"
+          />
+        </form>
+        <div id="results-container"></div>
+      </section>
+    </main>
+  </body>
+</html>

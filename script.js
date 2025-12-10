@@ -41,13 +41,21 @@ async function fetchMovies() {
     //数字だけfont-monoにするため分離
     const [num, unit] = Runtime.split(" ");
     resultsEl.innerHTML += `
-      <li class="movie-card p-4 border border-slate-300 rounded mb-4">
-        <img src="${Poster}" alt="Poster of ${Title}" class="mb-4 w-32" />
-        <h2 class="text-xl font-bold mb-2">${Title}</h2>
-        <p class="mb-1"><span class="font-mono">${num}</span>${" " + unit}</p>
-        <p class="mb-1">${Genre}</p>
-        <p class="mb-1">★<span class="font-mono">${" " + imdbRating}</span></p>
-        <p class="mb-1">${Plot}</p>
+      <li class="flex  p-4 border border-slate-300 rounded mb-4 overflow-hidden  md:flex-col ">
+        <img src="${Poster}" alt="Poster of ${Title}" class="mb-4 min-w-40 h-auto object-contain aspect-[2/3] rounded md:w-full" />
+        <div class="ml-4 ">
+            
+            <h2 class="text-xl font-bold mb-2">${Title}</h2>
+            <p class="mb-1">★<span class="font-mono">${
+              " " + imdbRating
+            }</span></p>
+            <p class="mb-1"><span class="font-mono">${num}</span>${
+      unit ? " " + unit : ""
+    }</p>
+            <p class="mb-1">${Genre}</p>
+            
+            <p class="mb-1 line-clamp-5\">${Plot}</p>
+        </div>
       </li>
     `;
   });

@@ -32,23 +32,24 @@ async function fetchMovies() {
   }
 
   //   console.log(movies);
-//   if (!movies) return;
+  //   if (!movies) return;
   console.log(movies);
   movies.forEach((movie, index) => {
-    const { Title, Actors, Plot, imdbRating, Runtime } = movie;
+    const { Title, Genre, Plot, imdbRating, Runtime } = movie;
     const Poster = searchData.Search[index].Poster;
-    console.log(Title, Actors, Plot, imdbRating, Runtime);
+    console.log(Title, Genre, Plot, imdbRating, Runtime);
+    //数字だけfont-monoにするため分離
+    const [num, unit] = Runtime.split(" ");
     resultsEl.innerHTML += `
-      <li class="movie-card p-4 border border-gray-300 rounded mb-4">
+      <li class="movie-card p-4 border border-slate-300 rounded mb-4">
         <img src="${Poster}" alt="Poster of ${Title}" class="mb-4 w-32" />
         <h2 class="text-xl font-bold mb-2">${Title}</h2>
-        <p class="mb-1"><strong>Actors:</strong> ${Actors}</p>
-        <p class="mb-1"><strong>Plot:</strong> ${Plot}</p>
-        <p class="mb-1"><strong>IMDB Rating:</strong> ${imdbRating}</p>
-        <p class="mb-1"><strong>Runtime:</strong> ${Runtime}</p>
+        <p class="mb-1"><span class="font-mono">${num}</span>${" " + unit}</p>
+        <p class="mb-1">${Genre}</p>
+        <p class="mb-1">★<span class="font-mono">${" " + imdbRating}</span></p>
+        <p class="mb-1">${Plot}</p>
       </li>
     `;
-
   });
 }
 

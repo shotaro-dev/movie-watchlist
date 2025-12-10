@@ -6,15 +6,18 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="script.js" defer></script>
     <title>Movie Watchlist</title>
+    <style></style>
   </head>
 
-  <body class="h-screen flex flex-col">
+  <body class="h-screen flex flex-col bg-slate-100">
     <header
-      class="bg-[url(./images/tyson-moultrie-BQTHOGNHo08-unsplash.jpg)] bg-cover bg-center h-1/4 p-4 flex justify-between items-center"
+      class="bg-[url(./images/tyson-moultrie-BQTHOGNHo08-unsplash.jpg)]
+       bg-black/70 bg-blend-multiply bg-cover bg-center h-1/4 text-white font-bold p-4 flex justify-between items-center"
     >
-      <h1>Find your film</h1>
+      <h1 class="text-4xl">Find your film</h1>
+      <button class="" id="go-watchList">My Watchlist</button>
     </header>
-    <main class="h-3/4 bg-gray-500">
+    <main class="h-3/4">
       <section id="search-section" class="p-4">
         <form id="search-form" class="mb-4">
           <!--  labelがいる -->
@@ -22,7 +25,7 @@
             type="search"
             id="search-input"
             placeholder="Search for a movie..."
-            class="w-full p-2 border border-gray-300 rounded"
+            class="w-full p-2 border border-slate-300 rounded"
           />
         </form>
         <ul id="results-container"></ul>

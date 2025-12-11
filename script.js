@@ -175,9 +175,9 @@ function displayWatchlist() {
     const removeWatchlistBtn = `<button data-id='${imdbID}' class="removeWatchlist-btn flex items-center "><span class="w-10 h-10 inline-block">${minusIcon}</span> Remove</button>`;
 
     watchlistEl.innerHTML += `
-          <li class="flex justify-center items-center  p-4 rounded mb-4 overflow-hidden ">
+          <li class="flex justify-start items-center  p-4 rounded mb-4 overflow-hidden ">
             <img src="${posterSrc}" alt="Poster of ${Title}" class=" max-w-40  object-cover aspect-[2/3] rounded " onerror="this.onerror=null;this.src='${placeholderPoster}';" />
-            <div class="ml-4 ">
+            <div class="ml-4 grow">
                 <div class="flex justify-start items-center gap-2 mb-2">
                     <h2 class="text-xl font-bold ">${Title}</h2>
                     <p class=""><span class="text-yellow-500">★</span><span class="font-mono ">${imdbRating}</span></p>

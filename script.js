@@ -2,7 +2,8 @@ const resultsEl = document.getElementById("results-container");
 const watchlistEl = document.getElementById("watchlist-container");
 const searchInputEl = document.getElementById("search-input");
 const formEl = document.getElementById("search-form");
-const seaerchMessageEl = document.getElementById("search-message");
+const searchMessageEl = document.getElementById("search-message");
+const watchlistMessageEl = document.getElementById("watchlist-message");
 
 const API = "1b1e0652";
 let title = searchInputEl ? searchInputEl.value.trim() : "";
@@ -74,8 +75,8 @@ async function fetchMovies() {
   } catch (error) {
     console.error("Error fetching movie details:", error);
     resultsEl.innerHTML = "";
-    if (seaerchMessageEl) {
-      seaerchMessageEl.innerHTML = `<p class="absolute top-1/3 left-1/2 -translate-x-1/2 text-2xl font-bold text-slate-600/30">What you are looking for cannot be found. Please try again with a different title.</p>`;
+    if (searchMessageEl) {
+      searchMessageEl.innerHTML = `<p class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  text-2xl font-bold text-slate-600/30">What you are looking for cannot be found. Please try again with a different title.</p>`;
     }
     return;
   }
@@ -85,6 +86,7 @@ async function fetchMovies() {
   //   console.log(movies);
 
   resultsEl.innerHTML = "";
+  searchMessageEl.innerHTML = "";
 
   movies.forEach((movie, index) => {
     const { Title, Genre, Plot, imdbRating, Runtime, imdbID } = movie;
@@ -151,7 +153,7 @@ async function fetchMovies() {
 }
 
 // 表示してるpageにない要素はnullになる。
-if (resultsEl) {
+if (resultsEl && title) {
   fetchMovies();
 } else {
   // watchlist.htmlの場合
@@ -162,7 +164,10 @@ function displayWatchlist() {
   watchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
   console.log(watchlist);
   if (watchlist.length === 0) {
-    watchlistEl.innerHTML = `<p class="text-center">Your watchlist is empty. <a href="index.html" class="text-blue-500 underline">Go add some movies!</a></p>`;
+    watchlistEl.innerHTML = "";
+    if (watchlistMessageEl) {
+      watchlistMessageEl.innerHTML = `<p class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-slate-600/30">Your watchlist is looking a little empty... <a href="index.html" class="text-blue-600 underline flex items-center"><span class=" h-10 w-10 inline-block ">${plusIcon}</span>Let's add some movies!</a></p>`;
+    }
     return;
   }
 

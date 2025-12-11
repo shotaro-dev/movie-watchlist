@@ -20,16 +20,18 @@
       <h1 class="text-4xl tracking-wide">Find your film</h1>
       <a href="watchlist.html" class="">My Watchlist</a>
     </header>
-    <main class="h-3/4">
+    <main class="h-3/4 relative">
       <section id="search-section" class="p-4">
-        <form id="search-form" class="mb-4">
-          <!--  labelがいる -->
+        <form id="search-form" class="mb-4 absolute top-0 -translate-y-1/2 z-999">
+          <label for="search-input" class="sr-only">Search for movies</label>
           <input
+            class="rounded-l mr-0"
             type="search"
             id="search-input"
-            placeholder="Search for a movie..."
+            placeholder="Search for movies..."
             class="w-full p-2 border border-slate-300 rounded"
           />
+          <button class="bg-slate-100 ml-0 rounded-r">Search</button>
         </form>
         <ul
           class="grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(450px,1fr))] gap-4"

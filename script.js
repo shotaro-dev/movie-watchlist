@@ -18,6 +18,8 @@ const searchIcon = `
 <path fill-rule="evenodd" clip-rule="evenodd" d="M43.75 31.25C36.8464 31.25 31.25 36.8464 31.25 43.75C31.25 50.6536 36.8464 56.25 43.75 56.25C50.6536 56.25 56.25 50.6536 56.25 43.75C56.25 36.8464 50.6536 31.25 43.75 31.25ZM25 43.75C25 33.3947 33.3947 25 43.75 25C54.1053 25 62.5 33.3947 62.5 43.75C62.5 47.7995 61.2163 51.5491 59.0336 54.6142L74.0847 69.6653C75.3051 70.8857 75.3051 72.8643 74.0847 74.0847C72.8643 75.3051 70.8857 75.3051 69.6653 74.0847L54.6142 59.0336C51.5491 61.2163 47.7995 62.5 43.75 62.5C33.3947 62.5 25 54.1053 25 43.75Z" />
 </svg>`;
 
+let watchlist = [];
+
 async function fetchMovies() {
   const searchResponse = await fetch(url);
   const searchData = await searchResponse.json();
@@ -47,12 +49,25 @@ async function fetchMovies() {
   //   if (!movies) return;
   console.log(movies);
   movies.forEach((movie, index) => {
-    const { Title, Genre, Plot, imdbRating, Runtime } = movie;
+    const { Title, Genre, Plot, imdbRating, Runtime, imdbID } = movie;
     const Poster = searchData.Search[index].Poster;
     console.log(Title, Genre, Plot, imdbRating, Runtime);
     //数字だけfont-monoにするため分離
     const [num, unit] = Runtime.split(" ");
-    const addWatchlistBtn = `<button class="flex items-center "><span class="w-10 h-10 inline-block">${plusIcon}</span> Watchlist</button>`;
+    const movieObj = {
+      Title,
+      Genre,
+      Plot,
+      imdbRating,
+      Runtime,
+      Poster,
+      imdbID,
+    };
+    // console.log(movieObj);
+    // data-属性にはstringしか保存できないため、JSON.stringifyで文字列化して保存
+    // Encode JSON string so it stays valid inside the data attribute
+    const encodedMovie = encodeURIComponent(JSON.stringify(movieObj));
+    const addWatchlistBtn = `<button data-movie='${encodedMovie}' class="addWatchlist-btn flex items-center "><span class="w-10 h-10 inline-block">${plusIcon}</span> Watchlist</button>`;
 
     resultsEl.innerHTML += `
       <li class="flex justify-center items-center  p-4 rounded mb-4 overflow-hidden ">
@@ -60,23 +75,42 @@ async function fetchMovies() {
         <div class="ml-4 ">
             <div class="flex justify-start items-center gap-2 mb-2">
                 <h2 class="text-xl font-bold ">${Title}</h2>
-                <p class=""><span class="text-yellow-500">★</span><span class="font-mono ">${
-                 imdbRating
-                }</span></p>
+                <p class=""><span class="text-yellow-500">★</span><span class="font-mono ">${imdbRating}</span></p>
             </div>
             <div class="flex justify-between items-center mb-2 gap-1">
                 <p class=""><span class="font-mono">${num}</span>${
-        unit ? " " + unit : ""
-        }</p>
+      unit ? " " + unit : ""
+    }</p>
                 <p class="">${Genre}</p>
                 ${addWatchlistBtn}
             </div>
             
-            <p class=" line-clamp-5\">${Plot}</p>
+            <p class=" line-clamp-5">${Plot}</p>
         </div>
       </li>
     `;
   });
+
+  const addToWatchlistBtns = 
+    document.querySelectorAll(".addWatchlist-btn")
+  
+  console.log(addToWatchlistBtns);
+  if (addToWatchlistBtns) {
+    addToWatchlistBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        console.log("Button clicked!");
+        // const movieObj = {};
+        // const movieID = btn.dataset.id;
+        const movieData = btn.dataset.movie;
+        console.log(movieData);
+        const movieObj = JSON.parse(decodeURIComponent(movieData));
+        console.log(movieObj);
+        saveToWatchlist(movieObj);
+
+        
+      });
+    });
+  }
 }
 
 fetchMovies();
@@ -88,3 +122,18 @@ fetchMovies();
 //     console.log(data.Search);
 //   });
 // //
+// localで指定しmovieデータを保存
+// fetchで取得したmovieから作ったobjectをarrayにpushしてlocalStorageに保存する
+function saveToWatchlist(movieObj) {
+    watchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
+    // watchlistの既存の要素と重複がなかったら追加
+    if (!watchlist.some(movie => movie.imdbID === movieObj.imdbID)) {
+      watchlist.push(movieObj); 
+      // Persist a JSON string; localStorage only stores strings
+      localStorage.setItem("watchlist", JSON.stringify(watchlist));
+    }
+}
+
+//for  debug
+localStorage.clear();
+

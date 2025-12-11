@@ -18,6 +18,9 @@ const minusIcon = `
 <path fill-rule="evenodd" clip-rule="evenodd" d="M50 75C63.8071 75 75 63.8071 75 50C75 36.1929 63.8071 25 50 25C36.1929 25 25 36.1929 25 50C25 63.8071 36.1929 75 50 75ZM40.625 46.875C38.8991 46.875 37.5 48.2741 37.5 50C37.5 51.7259 38.8991 53.125 40.625 53.125H59.375C61.1009 53.125 62.5 51.7259 62.5 50C62.5 48.2741 61.1009 46.875 59.375 46.875H40.625Z" />
 </svg>`;
 
+// Fallback image for missing posters
+const placeholderPoster = "./images/evan-buchholz-z-Hu8pnt23s-unsplash.jpg";
+
 let watchlist = [];
 
 function updateUrl() {
@@ -86,6 +89,8 @@ async function fetchMovies() {
   movies.forEach((movie, index) => {
     const { Title, Genre, Plot, imdbRating, Runtime, imdbID } = movie;
     const Poster = searchData.Search[index].Poster;
+    console.log(Poster);
+    const posterSrc = Poster && Poster !== "N/A" ? Poster : placeholderPoster;
     // console.log(Title, Genre, Plot, imdbRating, Runtime);
     //数字だけfont-monoにするため分離
     const [num, unit] = Runtime.split(" ");
@@ -106,7 +111,7 @@ async function fetchMovies() {
 
     resultsEl.innerHTML += `
       <li class="flex justify-start items-center  p-4 rounded mb-4 overflow-hidden ">
-        <img src="${Poster}" alt="Poster of ${Title}" class=" max-w-40  object-contain aspect-[2/3] rounded " />
+        <img src="${posterSrc}" alt="Poster of ${Title}" class=" max-w-40  object-cover aspect-[2/3] rounded " onerror="this.onerror=null;this.src='${placeholderPoster}';" />
         <div class="ml-4 grow">
             <div class="flex justify-start items-center gap-2 mb-2">
                 <h2 class="text-xl font-bold ">${Title}</h2>
@@ -164,13 +169,14 @@ function displayWatchlist() {
   watchlistEl.innerHTML = "";
   watchlist.forEach((movie) => {
     const { Title, Genre, Plot, imdbRating, Runtime, Poster, imdbID } = movie;
+    const posterSrc = Poster && Poster !== "N/A" ? Poster : placeholderPoster;
     //数字だけfont-monoにするため分離
     const [num, unit] = Runtime.split(" ");
     const removeWatchlistBtn = `<button data-id='${imdbID}' class="removeWatchlist-btn flex items-center "><span class="w-10 h-10 inline-block">${minusIcon}</span> Remove</button>`;
 
     watchlistEl.innerHTML += `
           <li class="flex justify-center items-center  p-4 rounded mb-4 overflow-hidden ">
-            <img src="${Poster}" alt="Poster of ${Title}" class=" min-w-40 h-auto object-contain aspect-[2/3] rounded lg:w-full" />
+            <img src="${posterSrc}" alt="Poster of ${Title}" class=" max-w-40  object-cover aspect-[2/3] rounded " onerror="this.onerror=null;this.src='${placeholderPoster}';" />
             <div class="ml-4 ">
                 <div class="flex justify-start items-center gap-2 mb-2">
                     <h2 class="text-xl font-bold ">${Title}</h2>

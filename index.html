@@ -17,10 +17,10 @@
       <a href="watchlist.html" class="">My Watchlist</a>
     </header>
     <main class="h-3/4 relative">
-      <section id="search-section" class="p-4">
+      <section class="p-4">
         <form
           id="search-form"
-          class="mb-4 absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 flex h-12 shadow-lg rounded-md overflow-hidden"
+          class=" absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 flex h-12 shadow-lg rounded-md overflow-hidden"
         >
           <span class="flex items-center justify-center bg-slate-50 px-3">
             <svg
@@ -49,8 +49,9 @@
             Search
           </button>
         </form>
+        <div id="search-message"></div>
         <ul
-          class="grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(450px,1fr))] gap-4"
+          class="mt-8 grid grid-cols-[repeat(auto-fill,minmax(450px,1fr))] gap-4"
           id="results-container"
         ></ul>
       </section>

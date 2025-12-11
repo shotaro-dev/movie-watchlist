@@ -9,19 +9,19 @@
     <style></style>
   </head>
 
-
-
-
-  
   <body class="h-screen flex flex-col bg-slate-100">
     <header
       class="bg-[url(./images/tyson-moultrie-BQTHOGNHo08-unsplash.jpg)] bg-black/70 bg-blend-multiply bg-cover bg-center h-1/4 text-white font-bold p-4 flex justify-between items-center md:px-10"
     >
       <h1 class="text-4xl tracking-wide md:text-5xl">My Watchlist</h1>
-      <a href="index.html" class="md:text-xl" >Search for movies</a>
+      <a
+        href="index.html"
+        class="md:text-xl hover:opacity-75 transition-opacity duration-300 active:opacity-50"
+        >Search for movies</a
+      >
     </header>
     <main class="h-3/4">
-      <section  class="p-4">
+      <section class="p-4">
         <div id="watchlist-message"></div>
         <ul
           class="grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(450px,1fr))] gap-4"

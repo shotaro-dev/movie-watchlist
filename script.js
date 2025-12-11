@@ -116,7 +116,7 @@ async function fetchMovies() {
     // data-属性にはstringしか保存できないため、JSON.stringifyで文字列化して保存
     // Encode JSON string so it stays valid inside the data attribute
     const encodedMovie = encodeURIComponent(JSON.stringify(movieObj));
-    const addWatchlistBtn = `<button data-movie='${encodedMovie}' class="addWatchlist-btn flex items-center "><span class="w-10 h-10 inline-block">${plusIcon}</span> Watchlist</button>`;
+    const addWatchlistBtn = `<button data-movie='${encodedMovie}' class="addWatchlist-btn flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50"><span class="w-10 h-10 inline-block">${plusIcon}</span> Watchlist</button>`;
 
     resultsEl.innerHTML += `
       <li class="flex justify-start items-center  p-4 rounded mb-4 overflow-hidden ">
@@ -174,7 +174,7 @@ function displayWatchlist() {
   if (watchlist.length === 0) {
     watchlistEl.innerHTML = "";
     if (watchlistMessageEl) {
-      watchlistMessageEl.innerHTML = `<p class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-slate-600/30">Your watchlist is looking a little empty... <a href="index.html" class="text-blue-600 underline flex items-center"><span class=" h-10 w-10 inline-block ">${plusIcon}</span>Let's add some movies!</a></p>`;
+      watchlistMessageEl.innerHTML = `<p class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-slate-600/30">Your watchlist is looking a little empty... <a href="index.html" class="text-black flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50"><span class=" h-10 w-10 inline-block ">${plusIcon}</span>Let's add some movies!</a></p>`;
     }
     return;
   }
@@ -185,7 +185,7 @@ function displayWatchlist() {
     const posterSrc = Poster && Poster !== "N/A" ? Poster : placeholderPoster;
     //数字だけfont-monoにするため分離
     const [num, unit] = Runtime.split(" ");
-    const removeWatchlistBtn = `<button data-id='${imdbID}' class="removeWatchlist-btn flex items-center "><span class="w-10 h-10 inline-block">${minusIcon}</span> Remove</button>`;
+    const removeWatchlistBtn = `<button data-id='${imdbID}' class="removeWatchlist-btn flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50"><span class="w-10 h-10 inline-block">${minusIcon}</span> Remove</button>`;
 
     watchlistEl.innerHTML += `
           <li class="flex justify-start items-center  p-4 rounded mb-4 overflow-hidden ">

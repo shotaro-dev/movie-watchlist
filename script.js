@@ -6,7 +6,11 @@ const searchMessageEl = document.getElementById("search-message");
 const watchlistMessageEl = document.getElementById("watchlist-message");
 
 const API = "1b1e0652";
-let title = searchInputEl ? searchInputEl.value.trim() : "";
+// Restore search term from sessionStorage
+let title = sessionStorage.getItem("searchTerm") || "";
+if (searchInputEl && title) {
+  searchInputEl.value = title;
+}
 const baseUrl = "https://www.omdbapi.com/";
 let queryParams = `?apikey=${API}&s=${title}`;
 let url = baseUrl + queryParams;
@@ -33,6 +37,8 @@ function updateUrl() {
 if (searchInputEl) {
   searchInputEl.addEventListener("input", (e) => {
     title = e.target.value.trim();
+    // Save to sessionStorage so it persists across page navigations
+    sessionStorage.setItem("searchTerm", title);
     console.log("Search term:", title);
     // 他の変数も更新しないと変わらない
     updateUrl();
@@ -42,10 +48,11 @@ if (searchInputEl) {
 if (formEl) {
   formEl.addEventListener("submit", (e) => {
     e.preventDefault();
-
-    console.log("Form submitted. Searching for:", title);
-    updateUrl();
-    fetchMovies();
+    if (title) {
+      console.log("Form submitted. Searching for:", title);
+      updateUrl();
+      fetchMovies();
+    }
   });
 }
 
@@ -163,6 +170,7 @@ if (resultsEl && title) {
 function displayWatchlist() {
   watchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
   console.log(watchlist);
+  console.log(title);
   if (watchlist.length === 0) {
     watchlistEl.innerHTML = "";
     if (watchlistMessageEl) {

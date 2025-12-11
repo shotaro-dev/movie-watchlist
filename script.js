@@ -1,4 +1,5 @@
 const resultsEl = document.getElementById("results-container");
+const watchlistEl = document.getElementById("watchlist-container");
 
 const API = "1b1e0652";
 const TITLE = "terminator";
@@ -113,7 +114,66 @@ async function fetchMovies() {
   }
 }
 
-fetchMovies();
+if(resultsEl){
+    fetchMovies();
+} else {
+    // watchlist.htmlの場合
+    displayWatchlist();
+}
+
+function displayWatchlist(){
+    watchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
+    console.log(watchlist);
+    if(watchlist.length ===0){
+        watchlistEl.innerHTML = `<p class="text-center">Your watchlist is empty. <a href="index.html" class="text-blue-500 underline">Go add some movies!</a></p>`;
+        return;
+    } 
+
+    watchlistEl.innerHTML = "";
+    watchlist.forEach((movie) => {
+        const { Title, Genre, Plot, imdbRating, Runtime, Poster, imdbID } = movie;
+        //数字だけfont-monoにするため分離
+        const [num, unit] = Runtime.split(" ");
+        const removeWatchlistBtn = `<button data-id='${imdbID}' class="removeWatchlist-btn flex items-center "><span class="w-10 h-10 inline-block">${minusIcon}</span> Remove</button>`;
+    
+        watchlistEl.innerHTML += `
+          <li class="flex justify-center items-center  p-4 rounded mb-4 overflow-hidden ">
+            <img src="${Poster}" alt="Poster of ${Title}" class=" min-w-40 h-auto object-contain aspect-[2/3] rounded lg:w-full" />
+            <div class="ml-4 ">
+                <div class="flex justify-start items-center gap-2 mb-2">
+                    <h2 class="text-xl font-bold ">${Title}</h2>
+                    <p class=""><span class="text-yellow-500">★</span><span class="font-mono ">${imdbRating}</span></p>
+                </div>
+                <div class="flex justify-between items-center mb-2 gap-1">
+                    <p class=""><span class="font-mono">${num}</span>${
+          unit ? " " + unit : ""
+        }</p>
+                    <p class="">${Genre}</p>
+                    ${removeWatchlistBtn}
+                </div>
+                
+                <p class=" line-clamp-5">${Plot}</p>
+            </div>
+          </li>
+        `;
+
+
+        const removeFromWatchlistBtns = 
+        document.querySelectorAll(".removeWatchlist-btn")
+      
+      console.log(removeFromWatchlistBtns);
+      if (removeFromWatchlistBtns) {
+        removeFromWatchlistBtns.forEach((btn) => {
+          btn.addEventListener("click", () => {
+            console.log("Remove Button clicked!");
+            const movieID = btn.dataset.id;
+            console.log(movieID);
+            removeFromWatchlist(movieID);
+          });
+        });
+      }
+    });
+};
 
 // fetch(url)
 //   .then((res) => res.json())
@@ -134,6 +194,14 @@ function saveToWatchlist(movieObj) {
     }
 }
 
+function removeFromWatchlist(movieID) {
+    watchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
+    watchlist = watchlist.filter(movie => movie.imdbID !== movieID);
+    localStorage.setItem("watchlist", JSON.stringify(watchlist));
+    // 再表示
+    displayWatchlist();
+}
+
 //for  debug
-localStorage.clear();
+// localStorage.clear();
 

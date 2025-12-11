@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="script.js" defer></script>
+    <title>Movie Watchlist - Watchlist</title>
+    <style></style>
+  </head>
+
+
+
+
+  
+  <body class="h-screen flex flex-col bg-slate-100">
+    <header
+      class="bg-[url(./images/tyson-moultrie-BQTHOGNHo08-unsplash.jpg)] bg-black/70 bg-blend-multiply bg-cover bg-center h-1/4 text-white font-bold p-4 flex justify-between items-center"
+    >
+      <h1 class="text-4xl tracking-wide">My Watchlist</h1>
+      <a href="index.html" class="" >Search for movies</a>
+    </header>
+    <main class="h-3/4">
+      <section id="search-section" class="p-4">
+        <form id="search-form" class="mb-4">
+          <!--  labelがいる -->
+          <input
+            type="search"
+            id="search-input"
+            placeholder="Search for a movie..."
+            class="w-full p-2 border border-slate-300 rounded"
+          />
+        </form>
+        <ul
+          class="grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(450px,1fr))] gap-4"
+          id="watchlist-container"
+        ></ul>
+      </section>
+    </main>
+  </body>
+</html>

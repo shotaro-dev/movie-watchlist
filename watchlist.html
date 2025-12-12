@@ -9,9 +9,9 @@
     <style></style>
   </head>
 
-  <body class="h-screen flex flex-col bg-slate-100">
+  <body class="min-h-screen flex flex-col bg-slate-100">
     <header
-      class="bg-[url(./images/tyson-moultrie-BQTHOGNHo08-unsplash.jpg)] bg-black/70 bg-blend-multiply bg-cover bg-center h-1/4 text-white font-bold p-4 flex justify-between items-center md:px-10"
+      class="bg-[url(./images/tyson-moultrie-BQTHOGNHo08-unsplash.jpg)] bg-black/70 bg-blend-multiply bg-cover bg-center min-h-[200px] text-white font-bold p-4 flex justify-between items-center md:px-10"
     >
       <h1 class="text-4xl tracking-wide md:text-5xl">My Watchlist</h1>
       <a
@@ -20,7 +20,7 @@
         >Search for movies</a
       >
     </header>
-    <main class="h-3/4">
+    <main class="flex-1">
       <section class="p-4">
         <div id="watchlist-message"></div>
         <ul

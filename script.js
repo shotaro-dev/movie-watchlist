@@ -31,7 +31,7 @@ let watchlist = [];
 function updateUrl() {
   queryParams = `?apikey=${API}&s=${title}`;
   url = baseUrl + queryParams;
-  console.log("Updated URL:", url);
+  // console.log("Updated URL:", url);
 }
 
 if (searchInputEl) {
@@ -39,8 +39,8 @@ if (searchInputEl) {
     title = e.target.value.trim();
     // Save to sessionStorage so it persists across page navigations
     sessionStorage.setItem("searchTerm", title);
-    console.log("Search term:", title);
-    // 他の変数も更新しないと変わらない
+    // console.log("Search term:", title);
+    // 他の変数も更新しないと検索url変わらない
     updateUrl();
   });
 }
@@ -49,7 +49,7 @@ if (formEl) {
   formEl.addEventListener("submit", (e) => {
     e.preventDefault();
     if (title) {
-      console.log("Form submitted. Searching for:", title);
+      // console.log("Form submitted. Searching for:", title);
       updateUrl();
       fetchMovies();
     }
@@ -57,8 +57,8 @@ if (formEl) {
 }
 
 async function fetchMovies() {
-  console.log("fetchMovies called with title:", title);
-  console.log(url);
+  // console.log("fetchMovies called with title:", title);
+  // console.log(url);
 
   const searchResponse = await fetch(url);
   const searchData = await searchResponse.json();
@@ -98,7 +98,7 @@ async function fetchMovies() {
   movies.forEach((movie, index) => {
     const { Title, Genre, Plot, imdbRating, Runtime, imdbID } = movie;
     const Poster = searchData.Search[index].Poster;
-    console.log(Poster);
+    // console.log(Poster);
     const posterSrc = Poster && Poster !== "N/A" ? Poster : placeholderPoster;
     // console.log(Title, Genre, Plot, imdbRating, Runtime);
     //数字だけfont-monoにするため分離
@@ -113,6 +113,7 @@ async function fetchMovies() {
       imdbID,
     };
     // console.log(movieObj);
+
     // data-属性にはstringしか保存できないため、JSON.stringifyで文字列化して保存
     // Encode JSON string so it stays valid inside the data attribute
     const encodedMovie = encodeURIComponent(JSON.stringify(movieObj));
@@ -146,13 +147,13 @@ async function fetchMovies() {
   if (addToWatchlistBtns) {
     addToWatchlistBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
-        console.log("Button clicked!");
+        // console.log("Button clicked!");
         // const movieObj = {};
         // const movieID = btn.dataset.id;
         const movieData = btn.dataset.movie;
-        console.log(movieData);
+        // console.log(movieData);
         const movieObj = JSON.parse(decodeURIComponent(movieData));
-        console.log(movieObj);
+        // console.log(movieObj);
         saveToWatchlist(movieObj);
       });
     });
@@ -160,8 +161,11 @@ async function fetchMovies() {
 }
 
 // 表示してるpageにない要素はnullになる。
-if (resultsEl && title) {
-  fetchMovies();
+if (resultsEl) {
+  // Only fetch if there's a search term
+  if (title) {
+    fetchMovies();
+  }
 } else {
   // watchlist.htmlの場合
   displayWatchlist();
@@ -169,12 +173,12 @@ if (resultsEl && title) {
 
 function displayWatchlist() {
   watchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
-  console.log(watchlist);
-  console.log(title);
+  // console.log(watchlist);
+  // console.log(title);
   if (watchlist.length === 0) {
     watchlistEl.innerHTML = "";
     if (watchlistMessageEl) {
-      watchlistMessageEl.innerHTML = `<p class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-slate-600/30">Your watchlist is looking a little empty... <a href="index.html" class="text-black flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50"><span class=" h-10 w-10 inline-block ">${plusIcon}</span>Let's add some movies!</a></p>`;
+      watchlistMessageEl.innerHTML = `<p class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-slate-600/30">Your watchlist is looking a little empty... <a href="index.html" class="text-black flex items-center ml-4 hover:opacity-75 transition-opacity duration-300 active:opacity-50"><span class=" h-10 w-10 inline-block ">${plusIcon}</span>Let's add some movies!</a></p>`;
     }
     return;
   }
@@ -207,32 +211,23 @@ function displayWatchlist() {
             </div>
           </li>
         `;
-
-    const removeFromWatchlistBtns = document.querySelectorAll(
-      ".removeWatchlist-btn"
-    );
-
-    console.log(removeFromWatchlistBtns);
-    if (removeFromWatchlistBtns) {
-      removeFromWatchlistBtns.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          console.log("Remove Button clicked!");
-          const movieID = btn.dataset.id;
-          console.log(movieID);
-          removeFromWatchlist(movieID);
-        });
-      });
-    }
   });
+
+  // Attach event listeners after all items are rendered
+  const removeFromWatchlistBtns = document.querySelectorAll(
+    ".removeWatchlist-btn"
+  );
+
+  if (removeFromWatchlistBtns) {
+    removeFromWatchlistBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const movieID = btn.dataset.id;
+        removeFromWatchlist(movieID);
+      });
+    });
+  }
 }
 
-// fetch(url)
-//   .then((res) => res.json())
-//   .then((data) => {
-//     console.log(data);
-//     console.log(data.Search);
-//   });
-// //
 // localで指定しmovieデータを保存
 // fetchで取得したmovieから作ったobjectをarrayにpushしてlocalStorageに保存する
 function saveToWatchlist(movieObj) {

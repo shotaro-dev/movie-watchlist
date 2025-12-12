@@ -5,7 +5,7 @@ const formEl = document.getElementById("search-form");
 const searchMessageEl = document.getElementById("search-message");
 const watchlistMessageEl = document.getElementById("watchlist-message");
 
-const API = "1b1e0652";
+const API = "1b1e0652";  // 無料プラン、1日1000リクエストまで
 // Restore search term from sessionStorage
 let title = sessionStorage.getItem("searchTerm") || "";
 if (searchInputEl && title) {
@@ -15,11 +15,11 @@ const baseUrl = "https://www.omdbapi.com/";
 let queryParams = `?apikey=${API}&s=${title}`;
 let url = baseUrl + queryParams;
 
-const plusIcon = `<svg class="w-full h-full fill-black dark:fill-white" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+const plusIcon = `<svg aria-hidden="true" class="w-full h-full fill-black dark:fill-white" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M50 75C63.8071 75 75 63.8071 75 50C75 36.1929 63.8071 25 50 25C36.1929 25 25 36.1929 25 50C25 63.8071 36.1929 75 50 75ZM53.125 40.625C53.125 38.8991 51.7259 37.5 50 37.5C48.2741 37.5 46.875 38.8991 46.875 40.625V46.875H40.625C38.8991 46.875 37.5 48.2741 37.5 50C37.5 51.7259 38.8991 53.125 40.625 53.125H46.875V59.375C46.875 61.1009 48.2741 62.5 50 62.5C51.7259 62.5 53.125 61.1009 53.125 59.375V53.125H59.375C61.1009 53.125 62.5 51.7259 62.5 50C62.5 48.2741 61.1009 46.875 59.375 46.875H53.125V40.625Z" />
 </svg>`;
 const minusIcon = `
-<svg class="w-full h-full fill-black dark:fill-white" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<svg aria-hidden="true" class="w-full h-full fill-black dark:fill-white" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M50 75C63.8071 75 75 63.8071 75 50C75 36.1929 63.8071 25 50 25C36.1929 25 25 36.1929 25 50C25 63.8071 36.1929 75 50 75ZM40.625 46.875C38.8991 46.875 37.5 48.2741 37.5 50C37.5 51.7259 38.8991 53.125 40.625 53.125H59.375C61.1009 53.125 62.5 51.7259 62.5 50C62.5 48.2741 61.1009 46.875 59.375 46.875H40.625Z" />
 </svg>`;
 
@@ -83,7 +83,7 @@ async function fetchMovies() {
     console.error("Error fetching movie details:", error);
     resultsEl.innerHTML = "";
     if (searchMessageEl) {
-      searchMessageEl.innerHTML = `<p class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  text-2xl font-bold text-slate-600/30 dark:text-slate-400/30">What you are looking for cannot be found. Please try again with a different title.</p>`;
+      searchMessageEl.innerHTML = `<p class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  text-2xl font-bold text-slate-700/60 dark:text-slate-200/60">What you are looking for cannot be found. Please try again with a different title.</p>`;
     }
     return;
   }
@@ -117,14 +117,14 @@ async function fetchMovies() {
     // data-属性にはstringしか保存できないため、JSON.stringifyで文字列化して保存
     // Encode JSON string so it stays valid inside the data attribute
     const encodedMovie = encodeURIComponent(JSON.stringify(movieObj));
-    const addWatchlistBtn = `<button data-movie='${encodedMovie}' class="addWatchlist-btn flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white"><span class="w-10 h-10 inline-block">${plusIcon}</span> Watchlist</button>`;
+    const addWatchlistBtn = `<button data-movie='${encodedMovie}' aria-label="Add ${Title} to watchlist" class="addWatchlist-btn flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white"><span class="w-10 h-10 inline-block">${plusIcon}</span> Watchlist</button>`;
 
     resultsEl.innerHTML += `
       <li class="flex justify-start items-center p-4 rounded mb-4 overflow-hidden bg-white dark:bg-slate-800 shadow-sm">
         <img src="${posterSrc}" alt="Poster of ${Title}" class=" max-w-40  object-cover aspect-[2/3] rounded " onerror="this.onerror=null;this.src='${placeholderPoster}';" />
         <div class="ml-4 grow">
             <div class="flex justify-start items-baseline gap-2 mb-2">
-                <h2 class="text-xl font-bold dark:text-white">${Title}</h2>
+                <h3 class="text-xl font-bold dark:text-white">${Title}</h3>
                 <p class="dark:text-slate-300"><span class="text-yellow-500">★</span><span class="font-mono ">${imdbRating}</span></p>
             </div>
             <div class="flex justify-between items-center  mb-2 gap-1">
@@ -178,7 +178,7 @@ function displayWatchlist() {
   if (watchlist.length === 0) {
     watchlistEl.innerHTML = "";
     if (watchlistMessageEl) {
-      watchlistMessageEl.innerHTML = `<p class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-slate-600/30 dark:text-slate-400/30">Your watchlist is looking a little empty... <a href="index.html" class="text-black dark:text-slate-300 flex items-center ml-4 hover:opacity-75 transition-opacity duration-300 active:opacity-50"><span class=" h-10 w-10 inline-block ">${plusIcon}</span>Let's add some movies!</a></p>`;
+      watchlistMessageEl.innerHTML = `<p class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-slate-700/60 dark:text-slate-200/60">Your watchlist is looking a little empty... <a href="index.html" class="text-black dark:text-slate-300 flex items-center ml-4 hover:opacity-75 transition-opacity duration-300 active:opacity-50"><span class=" h-10 w-10 inline-block ">${plusIcon}</span>Let's add some movies!</a></p>`;
     }
     return;
   }
@@ -189,14 +189,14 @@ function displayWatchlist() {
     const posterSrc = Poster && Poster !== "N/A" ? Poster : placeholderPoster;
     //数字だけfont-monoにするため分離
     const [num, unit] = Runtime.split(" ");
-    const removeWatchlistBtn = `<button data-id='${imdbID}' class="removeWatchlist-btn flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white"><span class="w-10 h-10 inline-block">${minusIcon}</span> Remove</button>`;
+    const removeWatchlistBtn = `<button  data-id='${imdbID}' aria-label="Remove ${Title} from watchlist" class="removeWatchlist-btn flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white"><span class="w-10 h-10 inline-block">${minusIcon}</span> Remove</button>`;
 
     watchlistEl.innerHTML += `
           <li class="flex justify-start items-center p-4 rounded mb-4 overflow-hidden bg-white dark:bg-slate-800 shadow-sm">
             <img src="${posterSrc}" alt="Poster of ${Title}" class=" max-w-40  object-cover aspect-[2/3] rounded " onerror="this.onerror=null;this.src='${placeholderPoster}';" />
             <div class="ml-4 grow">
                 <div class="flex justify-start items-baseline gap-2 mb-2">
-                    <h2 class="text-xl font-bold dark:text-white">${Title}</h2>
+                    <h3 class="text-xl font-bold dark:text-white">${Title}</h3>
                     <p class="dark:text-slate-300"><span class="text-yellow-500">★</span><span class="font-mono ">${imdbRating}</span></p>
                 </div>
                 <div class="flex justify-between items-center mb-2 gap-1">

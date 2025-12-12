@@ -20,9 +20,10 @@
         >Search for movies</a
       >
     </header>
-    <main class="flex-1">
-      <section class="p-4">
-        <div id="watchlist-message"></div>
+    <main class="flex-1" >
+      <section class="p-4 pt-20" aria-labelledby="watchlist-heading" role="region">
+        <h2 id="watchlist-heading" class="sr-only">My Watchlist</h2>
+        <div id="watchlist-message" role="status" aria-live="assertive"></div>
         <ul
           class="grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(450px,1fr))] gap-4"
           id="watchlist-container"

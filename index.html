@@ -21,12 +21,16 @@
       >
     </header>
     <main class="flex-1 relative">
-      <section class="p-4">
+      <section aria-labelledby="search-heading" role="search">
+        <h2 id="search-heading" class="sr-only">Search movies</h2>
         <form
           id="search-form"
           class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex h-12 shadow-lg rounded-md overflow-hidden"
         >
-          <span class="flex items-center justify-center bg-slate-50 dark:bg-slate-700 px-3">
+          <div
+            aria-hidden="true"
+            class="flex items-center justify-center bg-slate-50 dark:bg-slate-700 px-3"
+          >
             <svg
               class="w-6 h-6 fill-slate-400 dark:fill-slate-300"
               viewBox="0 0 100 100"
@@ -38,14 +42,15 @@
                 d="M43.75 31.25C36.8464 31.25 31.25 36.8464 31.25 43.75C31.25 50.6536 36.8464 56.25 43.75 56.25C50.6536 56.25 56.25 50.6536 56.25 43.75C56.25 36.8464 50.6536 31.25 43.75 31.25ZM25 43.75C25 33.3947 33.3947 25 43.75 25C54.1053 25 62.5 33.3947 62.5 43.75C62.5 47.7995 61.2163 51.5491 59.0336 54.6142L74.0847 69.6653C75.3051 70.8857 75.3051 72.8643 74.0847 74.0847C72.8643 75.3051 70.8857 75.3051 69.6653 74.0847L54.6142 59.0336C51.5491 61.2163 47.7995 62.5 43.75 62.5C33.3947 62.5 25 54.1053 25 43.75Z"
               />
             </svg>
-          </span>
+          </div>
           <label for="search-input" class="sr-only">Search for movies</label>
           <input
             type="search"
             id="search-input"
             placeholder="Search for movies..."
-            class="flex-1 px-4 py-2 border-0 focus:outline-none min-w-[300px] dark:bg-slate-800 dark:text-white dark:placeholder-slate-400"
+            class="flex-1 px-4 py-2 border-0  focus:ring-2 focus:ring-blue-500 min-w-[300px] dark:bg-slate-800 dark:text-white dark:placeholder-slate-400"
           />
+
           <button
             type="submit"
             class="bg-slate-200 hover:bg-slate-300 dark:bg-slate-600 dark:hover:bg-slate-500 px-6 font-semibold text-slate-700 dark:text-slate-100"
@@ -53,10 +58,18 @@
             Search
           </button>
         </form>
-        <div id="search-message"></div>
+      </section>
+      <section
+        class="p-4 pt-20"
+        aria-labelledby="results-heading"
+        role="region"
+        aria-live="polite"
+      >
+        <h2 id="results-heading" class="sr-only">Search Results</h2>
+        <div id="search-message" role="status" aria-live="assertive"></div>
         <ul
-          class="mt-8 grid grid-cols-[repeat(auto-fill,minmax(450px,1fr))] gap-4"
           id="results-container"
+          class="mt-8 grid grid-cols-[repeat(auto-fill,minmax(450px,1fr))] gap-4"
         ></ul>
       </section>
     </main>

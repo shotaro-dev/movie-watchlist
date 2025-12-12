@@ -18,4 +18,8 @@
 - watchlist.html ではローカルストレージに保存された映画がない場合、「Your watchlist is looking a little empty...」というメッセージを表示する。
 - watchilist がなかったら main section で search 　ページに誘導するボタンを表示する
 
-## 設計
+
+
+## Note
+This project uses a free OMDB API key with daily request limits.
+If the limit is reached, please get your own free key from https://www.omdbapi.com/

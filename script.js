@@ -123,7 +123,7 @@ async function fetchMovies() {
       <li class="flex justify-start items-center p-4 rounded mb-4 overflow-hidden bg-white dark:bg-slate-800 shadow-sm">
         <img src="${posterSrc}" alt="Poster of ${Title}" class=" max-w-40  object-cover aspect-[2/3] rounded " onerror="this.onerror=null;this.src='${placeholderPoster}';" />
         <div class="ml-4 grow">
-            <div class="flex justify-start items-center gap-2 mb-2">
+            <div class="flex justify-start items-baseline gap-2 mb-2">
                 <h2 class="text-xl font-bold dark:text-white">${Title}</h2>
                 <p class="dark:text-slate-300"><span class="text-yellow-500">★</span><span class="font-mono ">${imdbRating}</span></p>
             </div>
@@ -195,7 +195,7 @@ function displayWatchlist() {
           <li class="flex justify-start items-center p-4 rounded mb-4 overflow-hidden bg-white dark:bg-slate-800 shadow-sm">
             <img src="${posterSrc}" alt="Poster of ${Title}" class=" max-w-40  object-cover aspect-[2/3] rounded " onerror="this.onerror=null;this.src='${placeholderPoster}';" />
             <div class="ml-4 grow">
-                <div class="flex justify-start items-center gap-2 mb-2">
+                <div class="flex justify-start items-baseline gap-2 mb-2">
                     <h2 class="text-xl font-bold dark:text-white">${Title}</h2>
                     <p class="dark:text-slate-300"><span class="text-yellow-500">★</span><span class="font-mono ">${imdbRating}</span></p>
                 </div>

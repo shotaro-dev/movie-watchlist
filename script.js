@@ -5,7 +5,7 @@ const formEl = document.getElementById("search-form");
 const searchMessageEl = document.getElementById("search-message");
 const watchlistMessageEl = document.getElementById("watchlist-message");
 
-const API = "1b1e0652";  // 無料プラン、1日1000リクエストまで
+const API = "1b1e0652"; // 無料プラン、1日1000リクエストまで
 // Restore search term from sessionStorage
 let title = sessionStorage.getItem("searchTerm") || "";
 if (searchInputEl && title) {
@@ -36,7 +36,7 @@ function updateUrl() {
 
 if (searchInputEl) {
   searchInputEl.addEventListener("input", (e) => {
-    title = e.target.value.trim();
+    title = sanitizeInput(e.target.value.trim());
     // Save to sessionStorage so it persists across page navigations
     sessionStorage.setItem("searchTerm", title);
     // console.log("Search term:", title);
@@ -55,6 +55,8 @@ if (formEl) {
     }
   });
 }
+
+
 
 async function fetchMovies() {
   // console.log("fetchMovies called with title:", title);
@@ -246,6 +248,13 @@ function removeFromWatchlist(movieID) {
   localStorage.setItem("watchlist", JSON.stringify(watchlist));
   // 再表示
   displayWatchlist();
+}
+
+// 念の為、scriptタグを防止する
+function sanitizeInput(input) {
+  const div = document.createElement("div");
+  div.textContent = input;
+  return div.innerHTML;
 }
 
 //for  debug

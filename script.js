@@ -4,6 +4,7 @@ const searchInputEl = document.getElementById("search-input");
 const formEl = document.getElementById("search-form");
 const searchMessageEl = document.getElementById("search-message");
 const watchlistMessageEl = document.getElementById("watchlist-message");
+const loadingEl = document.getElementById("loading-indicator");
 
 const API = "1b1e0652"; // 無料プラン、1日1000リクエストまで
 // Restore search term from sessionStorage
@@ -56,11 +57,10 @@ if (formEl) {
   });
 }
 
-
-
 async function fetchMovies() {
   // console.log("fetchMovies called with title:", title);
   // console.log(url);
+  if (loadingEl) loadingEl.classList.remove("hidden");
 
   const searchResponse = await fetch(url);
   const searchData = await searchResponse.json();
@@ -83,6 +83,7 @@ async function fetchMovies() {
     );
   } catch (error) {
     console.error("Error fetching movie details:", error);
+    if (loadingEl) loadingEl.classList.add("hidden");
     resultsEl.innerHTML = "";
     if (searchMessageEl) {
       searchMessageEl.innerHTML = `<p class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  text-2xl font-bold text-slate-700/60 dark:text-slate-200/60">What you are looking for cannot be found. Please try again with a different title.</p>`;
@@ -160,6 +161,8 @@ async function fetchMovies() {
       });
     });
   }
+
+  if (loadingEl) loadingEl.classList.add("hidden");
 }
 
 // 表示してるpageにない要素はnullになる。

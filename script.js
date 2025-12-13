@@ -17,7 +17,7 @@ const baseUrl = "https://www.omdbapi.com/";
 let queryParams = `?apikey=${API}&s=${title}`;
 let url = baseUrl + queryParams;
 
-const plusIcon = `<svg aria-hidden="true" class="w-full h-full fill-black dark:fill-white" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+const plusIcon = `<svg aria-hidden="true" class="w-full h-full fill-black  dark:fill-white" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
 <path fill-rule="evenodd" clip-rule="evenodd" d="M50 75C63.8071 75 75 63.8071 75 50C75 36.1929 63.8071 25 50 25C36.1929 25 25 36.1929 25 50C25 63.8071 36.1929 75 50 75ZM53.125 40.625C53.125 38.8991 51.7259 37.5 50 37.5C48.2741 37.5 46.875 38.8991 46.875 40.625V46.875H40.625C38.8991 46.875 37.5 48.2741 37.5 50C37.5 51.7259 38.8991 53.125 40.625 53.125H46.875V59.375C46.875 61.1009 48.2741 62.5 50 62.5C51.7259 62.5 53.125 61.1009 53.125 59.375V53.125H59.375C61.1009 53.125 62.5 51.7259 62.5 50C62.5 48.2741 61.1009 46.875 59.375 46.875H53.125V40.625Z" />
 </svg>`;
 const minusIcon = `
@@ -27,6 +27,9 @@ const minusIcon = `
 
 // Fallback image for missing posters
 const placeholderPoster = "./images/evan-buchholz-z-Hu8pnt23s-unsplash.jpg";
+
+const TOAST_DURATION = 1200;
+const FADE_DURATION = 300;
 
 let watchlist = [];
 
@@ -121,26 +124,28 @@ async function fetchMovies() {
     // data-属性にはstringしか保存できないため、JSON.stringifyで文字列化して保存
     // Encode JSON string so it stays valid inside the data attribute
     const encodedMovie = encodeURIComponent(JSON.stringify(movieObj));
-    const addWatchlistBtn = `<button data-movie='${encodedMovie}' aria-label="Add ${Title} to watchlist" class="addWatchlist-btn flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white"><span class="w-10 h-10 inline-block">${plusIcon}</span> Watchlist</button>`;
+    const addWatchlistBtn = `<button data-movie='${encodedMovie}' class="addWatchlist-btn pr-2 flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white"><span class="w-10 h-10 inline-block">${plusIcon}</span> Watchlist</button>`;
 
     resultsEl.innerHTML += `
-      <li class="flex justify-start items-center p-4 rounded mb-4 overflow-hidden bg-white dark:bg-slate-800 shadow-sm">
-        <img src="${posterSrc}" alt="Poster of ${Title}" class=" max-w-40  object-cover aspect-[2/3] rounded " onerror="this.onerror=null;this.src='${placeholderPoster}';" />
-        <div class="ml-4 grow">
-            <div class="flex justify-start items-baseline gap-2 mb-2">
-                <h3 class="text-xl font-bold dark:text-white">${Title}</h3>
-                <p class="dark:text-slate-300"><span class="text-yellow-500">★</span><span class="font-mono ">${imdbRating}</span></p>
-            </div>
-            <div class="flex justify-between items-center  mb-2 gap-1">
-                <p class="dark:text-slate-300"><span class="font-mono">${num}</span>${
+      <li>
+        <article class="flex justify-start items-center p-4 rounded mb-4 overflow-hidden bg-white dark:bg-slate-800 shadow-sm">
+          <img src="${posterSrc}" alt="Poster of ${Title}" class=" max-w-40  object-cover aspect-[2/3] rounded " onerror="this.onerror=null;this.src='${placeholderPoster}';" />
+          <div class="ml-4 grow">
+              <div class="flex justify-start items-baseline gap-2 mb-2">
+                  <h3 class="text-xl font-bold dark:text-white">${Title}</h3>
+                  <p class="dark:text-slate-300"><span class="text-yellow-500">★</span><span class="font-mono ">${imdbRating}</span></p>
+              </div>
+              <div class="flex justify-between items-center  mb-2 gap-1">
+                  <p class="dark:text-slate-300"><span class="font-mono">${num}</span>${
       unit ? " " + unit : ""
     }</p>
-                <p class="dark:text-slate-300">${Genre}</p>
-                ${addWatchlistBtn}
-            </div>
-            
-            <p class="line-clamp-5 dark:text-slate-400">${Plot}</p>
-        </div>
+                  <p class="dark:text-slate-300">${Genre}</p>
+                  ${addWatchlistBtn}
+              </div>
+              
+              <p class="line-clamp-5 dark:text-slate-400">${Plot}</p>
+          </div>
+        </article>
       </li>
     `;
   });
@@ -195,26 +200,28 @@ function displayWatchlist() {
     const posterSrc = Poster && Poster !== "N/A" ? Poster : placeholderPoster;
     //数字だけfont-monoにするため分離
     const [num, unit] = Runtime.split(" ");
-    const removeWatchlistBtn = `<button  data-id='${imdbID}' aria-label="Remove ${Title} from watchlist" class="removeWatchlist-btn flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white"><span class="w-10 h-10 inline-block">${minusIcon}</span> Remove</button>`;
+    const removeWatchlistBtn = `<button  data-id='${imdbID}' aria-label="Remove ${Title} from watchlist" class="removeWatchlist-btn  pr-2 flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white"><span class="w-10 h-10 inline-block">${minusIcon}</span> Remove</button>`;
 
     watchlistEl.innerHTML += `
-          <li class="flex justify-start items-center p-4 rounded mb-4 overflow-hidden bg-white dark:bg-slate-800 shadow-sm">
-            <img src="${posterSrc}" alt="Poster of ${Title}" class=" max-w-40  object-cover aspect-[2/3] rounded " onerror="this.onerror=null;this.src='${placeholderPoster}';" />
-            <div class="ml-4 grow">
-                <div class="flex justify-start items-baseline gap-2 mb-2">
-                    <h3 class="text-xl font-bold dark:text-white">${Title}</h3>
-                    <p class="dark:text-slate-300"><span class="text-yellow-500">★</span><span class="font-mono ">${imdbRating}</span></p>
-                </div>
-                <div class="flex justify-between items-center mb-2 gap-1">
-                    <p class="dark:text-slate-300"><span class="font-mono">${num}</span>${
+          <li>
+            <article class="flex justify-start items-center p-4 rounded mb-4 overflow-hidden bg-white dark:bg-slate-800 shadow-sm">
+              <img src="${posterSrc}" alt="Poster of ${Title}" class=" max-w-40  object-cover aspect-[2/3] rounded " onerror="this.onerror=null;this.src='${placeholderPoster}';" />
+              <div class="ml-4 grow">
+                  <div class="flex justify-start items-baseline gap-2 mb-2">
+                      <h3 class="text-xl font-bold dark:text-white">${Title}</h3>
+                      <p class="dark:text-slate-300"><span class="text-yellow-500">★</span><span class="font-mono ">${imdbRating}</span></p>
+                  </div>
+                  <div class="flex justify-between items-center mb-2 gap-1">
+                      <p class="dark:text-slate-300"><span class="font-mono">${num}</span>${
       unit ? " " + unit : ""
     }</p>
-                    <p class="dark:text-slate-300">${Genre}</p>
-                    ${removeWatchlistBtn}
-                </div>
-                
-                <p class="line-clamp-5 dark:text-slate-400">${Plot}</p>
-            </div>
+                      <p class="dark:text-slate-300">${Genre}</p>
+                      ${removeWatchlistBtn}
+                  </div>
+                  
+                  <p class="line-clamp-5 dark:text-slate-400">${Plot}</p>
+              </div>
+            </article>
           </li>
         `;
   });
@@ -267,13 +274,22 @@ function showToast(message = "Movie added to watchlist!") {
   toastEl.textContent = message;
   toastEl.classList.remove("hidden");
   toastEl.style.opacity = "1";
+  // フォーカスを当ててスクリーンリーダーに確実に読ませる
+  const prevFocus = document.activeElement;
+  toastEl.setAttribute("tabindex", "-1");
+  toastEl.focus();
   setTimeout(() => {
     toastEl.style.opacity = "0";
     setTimeout(() => {
       toastEl.classList.add("hidden");
       toastEl.style.opacity = "";
-    }, 300);
-  }, 1200);
+      toastEl.removeAttribute("tabindex");
+      // フォーカスを戻す（元の要素があれば）
+      if (prevFocus && typeof prevFocus.focus === "function") {
+        prevFocus.focus();
+      }
+    }, FADE_DURATION);
+  }, TOAST_DURATION);
 }
 
 //for  debug

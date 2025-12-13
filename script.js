@@ -5,6 +5,7 @@ const formEl = document.getElementById("search-form");
 const searchMessageEl = document.getElementById("search-message");
 const watchlistMessageEl = document.getElementById("watchlist-message");
 const loadingEl = document.getElementById("loading-indicator");
+const toastEl = document.getElementById("toast");
 
 const API = "1b1e0652"; // 無料プラン、1日1000リクエストまで
 // Restore search term from sessionStorage
@@ -183,7 +184,7 @@ function displayWatchlist() {
   if (watchlist.length === 0) {
     watchlistEl.innerHTML = "";
     if (watchlistMessageEl) {
-      watchlistMessageEl.innerHTML = `<p class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-slate-700/60 dark:text-slate-200/60">Your watchlist is looking a little empty... <a href="index.html" class="text-black dark:text-slate-300 flex items-center ml-4 hover:opacity-75 transition-opacity duration-300 active:opacity-50"><span class=" h-10 w-10 inline-block ">${plusIcon}</span>Let's add some movies!</a></p>`;
+      watchlistMessageEl.innerHTML = `<p class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-slate-700/60 dark:text-slate-200/60">Your watchlist is looking a little empty... <a href="index.html" class="text-black dark:text-slate-300 flex items-center mt-4  hover:opacity-75 transition-opacity duration-300 active:opacity-50"><span class=" h-10 w-10 inline-block ">${plusIcon}</span>Let's add some movies!</a></p>`;
     }
     return;
   }
@@ -242,6 +243,7 @@ function saveToWatchlist(movieObj) {
     watchlist.push(movieObj);
     // Persist a JSON string; localStorage only stores strings
     localStorage.setItem("watchlist", JSON.stringify(watchlist));
+    showToast();
   }
 }
 
@@ -258,6 +260,20 @@ function sanitizeInput(input) {
   const div = document.createElement("div");
   div.textContent = input;
   return div.innerHTML;
+}
+
+function showToast(message = "Movie added to watchlist!") {
+  if (!toastEl) return;
+  toastEl.textContent = message;
+  toastEl.classList.remove("hidden");
+  toastEl.style.opacity = "1";
+  setTimeout(() => {
+    toastEl.style.opacity = "0";
+    setTimeout(() => {
+      toastEl.classList.add("hidden");
+      toastEl.style.opacity = "";
+    }, 300);
+  }, 1200);
 }
 
 //for  debug

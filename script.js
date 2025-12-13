@@ -28,15 +28,63 @@ const minusIcon = `
 // Fallback image for missing posters
 const placeholderPoster = "./images/evan-buchholz-z-Hu8pnt23s-unsplash.jpg";
 
-const TOAST_DURATION = 1200;
-const FADE_DURATION = 300;
+const CONFIG = {
+  TOAST_DURATION: 1200,
+  FADE_DURATION: 300,
+};
 
 let watchlist = [];
 
 function updateUrl() {
   queryParams = `?apikey=${API}&s=${title}`;
   url = baseUrl + queryParams;
-  // console.log("Updated URL:", url);
+}
+
+function renderMovie(movie, isWatchlist = false) {
+  const { Title, Genre, Plot, imdbRating, Runtime, Poster, imdbID } = movie;
+  const posterSrc = Poster && Poster !== "N/A" ? Poster : placeholderPoster;
+  //数字だけfont-monoにするため分離
+  const [num, unit] = Runtime.split(" ");
+  const movieObj = {
+    Title,
+    Genre,
+    Plot,
+    imdbRating,
+    Runtime,
+    Poster,
+    imdbID,
+  };
+  // console.log(movieObj);
+
+  // data-*属性にはstringしか保存できないため、JSON.stringifyで文字列化して保存
+  // Encode JSON string so it stays valid inside the data attribute
+  const encodedMovie = encodeURIComponent(JSON.stringify(movieObj));
+  const buttonHtml = isWatchlist
+    ? `<button data-id='${imdbID}' aria-label="Remove ${Title} from watchlist" class="removeWatchlist-btn pr-2 flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white"><span class="w-10 h-10 inline-block">${minusIcon}</span> Remove</button>`
+    : `<button data-movie='${encodedMovie}' aria-label="Add ${Title} to watchlist" class="addWatchlist-btn pr-2 flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white"><span class="w-10 h-10 inline-block">${plusIcon}</span> Watchlist</button>`;
+
+  return `
+    <li>
+      <article class="flex justify-start items-center p-4 rounded mb-4 overflow-hidden bg-white dark:bg-slate-800 shadow-sm">
+        <img src="${posterSrc}" alt="Poster of ${Title}" class=" max-w-40  object-cover aspect-[2/3] rounded " onerror="this.onerror=null;this.src='${placeholderPoster}';" />
+        <div class="ml-4 grow">
+            <div class="flex justify-start items-baseline gap-2 mb-2">
+                <h3 class="text-xl line-clamp-2 font-bold dark:text-white">${Title}</h3>
+                <p class="dark:text-slate-300"><span class="text-yellow-500">★</span><span class="font-mono ">${imdbRating}</span></p>
+            </div>
+            <div class="flex justify-between items-center  mb-2 gap-3">
+                <p class="dark:text-slate-300"><span class="font-mono">${num}</span>${
+    unit ? " " + unit : ""
+  }</p>
+                <p class="dark:text-slate-300">${Genre}</p>
+                ${buttonHtml}
+            </div>
+            
+            <p class="line-clamp-4 dark:text-slate-400">${Plot}</p>
+        </div>
+      </article>
+    </li>
+  `;
 }
 
 if (searchInputEl) {
@@ -54,7 +102,6 @@ if (formEl) {
   formEl.addEventListener("submit", (e) => {
     e.preventDefault();
     if (title) {
-      // console.log("Form submitted. Searching for:", title);
       updateUrl();
       fetchMovies();
     }
@@ -62,113 +109,79 @@ if (formEl) {
 }
 
 async function fetchMovies() {
-  // console.log("fetchMovies called with title:", title);
-  // console.log(url);
   if (loadingEl) loadingEl.classList.remove("hidden");
 
-  const searchResponse = await fetch(url);
-  const searchData = await searchResponse.json();
-
-  //   console.log(searchData);
-  let movies;
-  // promise.allで複数のfetchを全て通るか判定
   try {
-    movies = await Promise.all(
+    const searchResponse = await fetch(url);
+    if (!searchResponse.ok) {
+      throw new Error(
+        `Search API failed: ${searchResponse.status} ${searchResponse.statusText}`
+      );
+    }
+    const searchData = await searchResponse.json();
+
+    if (searchData.Response === "False") {
+      throw new Error(searchData.Error || "No results found");
+    }
+
+    // promise.allで並列で複数のmovieの詳細取得
+    const movies = await Promise.all(
       searchData.Search.map(async (movie) => {
         const detailsUrl = `${baseUrl}?apikey=${API}&i=${movie.imdbID}`;
         const detailsResponse = await fetch(detailsUrl);
         if (!detailsResponse.ok) {
           throw new Error(
-            `Failed to fetch ${movie.Title}. status: ${detailsResponse.status}`
+            `Details API failed for ${movie.Title}: ${detailsResponse.status} ${detailsResponse.statusText}`
           );
         }
-        return await detailsResponse.json();
+        const detailsData = await detailsResponse.json();
+        if (detailsData.Response === "False") {
+          throw new Error(
+            `Details not found for ${movie.Title}: ${detailsData.Error}`
+          );
+        }
+        return detailsData;
       })
     );
+
+
+
+    resultsEl.innerHTML = "";
+    searchMessageEl.innerHTML = "";
+
+    movies.forEach((movie) => {
+      resultsEl.innerHTML += renderMovie(movie, false);
+    });
+
+    const addToWatchlistBtns = document.querySelectorAll(".addWatchlist-btn");
+
+    //   console.log(addToWatchlistBtns);
+    if (addToWatchlistBtns) {
+      addToWatchlistBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const movieData = btn.dataset.movie;
+          const movieObj = JSON.parse(decodeURIComponent(movieData));
+          saveToWatchlist(movieObj);
+        });
+      });
+    }
+
+    if (loadingEl) loadingEl.classList.add("hidden");
   } catch (error) {
     console.error("Error fetching movie details:", error);
     if (loadingEl) loadingEl.classList.add("hidden");
     resultsEl.innerHTML = "";
-    if (searchMessageEl) {
-      searchMessageEl.innerHTML = `<p class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  text-2xl font-bold text-slate-700/60 dark:text-slate-200/60">What you are looking for cannot be found. Please try again with a different title.</p>`;
+    let errorMessage = "An error occurred while fetching movies.";
+    if (error.message.includes("429")) {
+      errorMessage = "Rate limit exceeded. Please try again later.";
+    } else if (error.message.includes("No results")) {
+      errorMessage =
+        "What you are looking for cannot be found. Please try again with a different title.";
     }
-    return;
+    if (searchMessageEl) {
+      searchMessageEl.innerHTML = `<p class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  text-2xl font-bold text-slate-700/60 dark:text-slate-200/60">${errorMessage}</p>`;
+    }
   }
-
-  //   console.log(movies);
-  //   if (!movies) return;
-  //   console.log(movies);
-
-  resultsEl.innerHTML = "";
-  searchMessageEl.innerHTML = "";
-
-  movies.forEach((movie, index) => {
-    const { Title, Genre, Plot, imdbRating, Runtime, imdbID } = movie;
-    const Poster = searchData.Search[index].Poster;
-    // console.log(Poster);
-    const posterSrc = Poster && Poster !== "N/A" ? Poster : placeholderPoster;
-    // console.log(Title, Genre, Plot, imdbRating, Runtime);
-    //数字だけfont-monoにするため分離
-    const [num, unit] = Runtime.split(" ");
-    const movieObj = {
-      Title,
-      Genre,
-      Plot,
-      imdbRating,
-      Runtime,
-      Poster,
-      imdbID,
-    };
-    // console.log(movieObj);
-
-    // data-属性にはstringしか保存できないため、JSON.stringifyで文字列化して保存
-    // Encode JSON string so it stays valid inside the data attribute
-    const encodedMovie = encodeURIComponent(JSON.stringify(movieObj));
-    const addWatchlistBtn = `<button data-movie='${encodedMovie}' class="addWatchlist-btn pr-2 flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white"><span class="w-10 h-10 inline-block">${plusIcon}</span> Watchlist</button>`;
-
-    resultsEl.innerHTML += `
-      <li>
-        <article class="flex justify-start items-center p-4 rounded mb-4 overflow-hidden bg-white dark:bg-slate-800 shadow-sm">
-          <img src="${posterSrc}" alt="Poster of ${Title}" class=" max-w-40  object-cover aspect-[2/3] rounded " onerror="this.onerror=null;this.src='${placeholderPoster}';" />
-          <div class="ml-4 grow">
-              <div class="flex justify-start items-baseline gap-2 mb-2">
-                  <h3 class="text-xl font-bold dark:text-white">${Title}</h3>
-                  <p class="dark:text-slate-300"><span class="text-yellow-500">★</span><span class="font-mono ">${imdbRating}</span></p>
-              </div>
-              <div class="flex justify-between items-center  mb-2 gap-1">
-                  <p class="dark:text-slate-300"><span class="font-mono">${num}</span>${
-      unit ? " " + unit : ""
-    }</p>
-                  <p class="dark:text-slate-300">${Genre}</p>
-                  ${addWatchlistBtn}
-              </div>
-              
-              <p class="line-clamp-5 dark:text-slate-400">${Plot}</p>
-          </div>
-        </article>
-      </li>
-    `;
-  });
-
-  const addToWatchlistBtns = document.querySelectorAll(".addWatchlist-btn");
-
-  //   console.log(addToWatchlistBtns);
-  if (addToWatchlistBtns) {
-    addToWatchlistBtns.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        // console.log("Button clicked!");
-        // const movieObj = {};
-        // const movieID = btn.dataset.id;
-        const movieData = btn.dataset.movie;
-        // console.log(movieData);
-        const movieObj = JSON.parse(decodeURIComponent(movieData));
-        // console.log(movieObj);
-        saveToWatchlist(movieObj);
-      });
-    });
-  }
-
-  if (loadingEl) loadingEl.classList.add("hidden");
 }
 
 // 表示してるpageにない要素はnullになる。
@@ -184,8 +197,6 @@ if (resultsEl) {
 
 function displayWatchlist() {
   watchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
-  // console.log(watchlist);
-  // console.log(title);
   if (watchlist.length === 0) {
     watchlistEl.innerHTML = "";
     if (watchlistMessageEl) {
@@ -196,34 +207,7 @@ function displayWatchlist() {
 
   watchlistEl.innerHTML = "";
   watchlist.forEach((movie) => {
-    const { Title, Genre, Plot, imdbRating, Runtime, Poster, imdbID } = movie;
-    const posterSrc = Poster && Poster !== "N/A" ? Poster : placeholderPoster;
-    //数字だけfont-monoにするため分離
-    const [num, unit] = Runtime.split(" ");
-    const removeWatchlistBtn = `<button  data-id='${imdbID}' aria-label="Remove ${Title} from watchlist" class="removeWatchlist-btn  pr-2 flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white"><span class="w-10 h-10 inline-block">${minusIcon}</span> Remove</button>`;
-
-    watchlistEl.innerHTML += `
-          <li>
-            <article class="flex justify-start items-center p-4 rounded mb-4 overflow-hidden bg-white dark:bg-slate-800 shadow-sm">
-              <img src="${posterSrc}" alt="Poster of ${Title}" class=" max-w-40  object-cover aspect-[2/3] rounded " onerror="this.onerror=null;this.src='${placeholderPoster}';" />
-              <div class="ml-4 grow">
-                  <div class="flex justify-start items-baseline gap-2 mb-2">
-                      <h3 class="text-xl font-bold dark:text-white">${Title}</h3>
-                      <p class="dark:text-slate-300"><span class="text-yellow-500">★</span><span class="font-mono ">${imdbRating}</span></p>
-                  </div>
-                  <div class="flex justify-between items-center mb-2 gap-1">
-                      <p class="dark:text-slate-300"><span class="font-mono">${num}</span>${
-      unit ? " " + unit : ""
-    }</p>
-                      <p class="dark:text-slate-300">${Genre}</p>
-                      ${removeWatchlistBtn}
-                  </div>
-                  
-                  <p class="line-clamp-5 dark:text-slate-400">${Plot}</p>
-              </div>
-            </article>
-          </li>
-        `;
+    watchlistEl.innerHTML += renderMovie(movie, true);
   });
 
   // Attach event listeners after all items are rendered
@@ -262,11 +246,14 @@ function removeFromWatchlist(movieID) {
   displayWatchlist();
 }
 
-// 念の為、scriptタグを防止する
+// 念の為、scriptタグや危険なタグを防止する
 function sanitizeInput(input) {
   const div = document.createElement("div");
   div.textContent = input;
-  return div.innerHTML;
+  // 追加: scriptタグやon*属性を除去（シンプル版）
+  return div.innerHTML
+    .replace(/<script[^>]*>.*?<\/script>/gi, "") 
+    .replace(/on\w+="[^"]*"/gi, "");
 }
 
 function showToast(message = "Movie added to watchlist!") {

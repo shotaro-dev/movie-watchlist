@@ -7,7 +7,7 @@ const watchlistMessageEl = document.getElementById("watchlist-message");
 const loadingEl = document.getElementById("loading-indicator");
 const toastEl = document.getElementById("toast");
 
-const API = "1b1e0652"; // 無料プラン、1日1000リクエストまで
+const API = "1b1e0652"; // Free plan, up to 1000 requests per day
 // Restore search term from sessionStorage
 let title = sessionStorage.getItem("searchTerm") || "";
 if (searchInputEl && title) {
@@ -43,7 +43,7 @@ function updateUrl() {
 function renderMovie(movie, isWatchlist = false) {
   const { Title, Genre, Plot, imdbRating, Runtime, Poster, imdbID } = movie;
   const posterSrc = Poster && Poster !== "N/A" ? Poster : placeholderPoster;
-  //数字だけfont-monoにするため分離
+  // Separate to make only numbers font-mono
   const [num, unit] = Runtime.split(" ");
   const movieObj = {
     Title,
@@ -56,7 +56,7 @@ function renderMovie(movie, isWatchlist = false) {
   };
   // console.log(movieObj);
 
-  // data-*属性にはstringしか保存できないため、JSON.stringifyで文字列化して保存
+  // Since data-* attributes can only store strings, stringify with JSON.stringify and save
   // Encode JSON string so it stays valid inside the data attribute
   const encodedMovie = encodeURIComponent(JSON.stringify(movieObj));
   const buttonHtml = isWatchlist
@@ -93,7 +93,7 @@ if (searchInputEl) {
     // Save to sessionStorage so it persists across page navigations
     sessionStorage.setItem("searchTerm", title);
     // console.log("Search term:", title);
-    // 他の変数も更新しないと検索url変わらない
+    // Other variables must also be updated or the search URL won't change
     updateUrl();
   });
 }
@@ -124,7 +124,7 @@ async function fetchMovies() {
       throw new Error(searchData.Error || "No results found");
     }
 
-    // promise.allで並列で複数のmovieの詳細取得
+    // Use Promise.all to fetch multiple movie details in parallel
     const movies = await Promise.all(
       searchData.Search.map(async (movie) => {
         const detailsUrl = `${baseUrl}?apikey=${API}&i=${movie.imdbID}`;
@@ -184,14 +184,14 @@ async function fetchMovies() {
   }
 }
 
-// 表示してるpageにない要素はnullになる。
+// Elements not on the displayed page become null.
 if (resultsEl) {
   // Only fetch if there's a search term
   if (title) {
     fetchMovies();
   }
 } else {
-  // watchlist.htmlの場合
+  // In case of watchlist.html
   displayWatchlist();
 }
 
@@ -225,11 +225,11 @@ function displayWatchlist() {
   }
 }
 
-// localで指定しmovieデータを保存
-// fetchで取得したmovieから作ったobjectをarrayにpushしてlocalStorageに保存する
+// Save movie data locally
+// Push the object created from the fetched movie to the array and save to localStorage
 function saveToWatchlist(movieObj) {
   watchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
-  // watchlistの既存の要素と重複がなかったら追加
+  // Add if not duplicated with existing elements in watchlist
   if (!watchlist.some((movie) => movie.imdbID === movieObj.imdbID)) {
     watchlist.push(movieObj);
     // Persist a JSON string; localStorage only stores strings
@@ -242,15 +242,15 @@ function removeFromWatchlist(movieID) {
   watchlist = JSON.parse(localStorage.getItem("watchlist")) || [];
   watchlist = watchlist.filter((movie) => movie.imdbID !== movieID);
   localStorage.setItem("watchlist", JSON.stringify(watchlist));
-  // 再表示
+  // re-render the watchlist
   displayWatchlist();
 }
 
-// 念の為、scriptタグや危険なタグを防止する
+// To be safe, prevent script tags and dangerous tags
 function sanitizeInput(input) {
   const div = document.createElement("div");
   div.textContent = input;
-  // 追加: scriptタグやon*属性を除去（シンプル版）
+  // Additional: Remove script tags and on* attributes (simple version)
   return div.innerHTML
     .replace(/<script[^>]*>.*?<\/script>/gi, "") 
     .replace(/on\w+="[^"]*"/gi, "");
@@ -261,7 +261,7 @@ function showToast(message = "Movie added to watchlist!") {
   toastEl.textContent = message;
   toastEl.classList.remove("hidden");
   toastEl.style.opacity = "1";
-  // フォーカスを当ててスクリーンリーダーに確実に読ませる
+  // Focus to ensure screen readers announce the toast
   const prevFocus = document.activeElement;
   toastEl.setAttribute("tabindex", "-1");
   toastEl.focus();
@@ -271,7 +271,7 @@ function showToast(message = "Movie added to watchlist!") {
       toastEl.classList.add("hidden");
       toastEl.style.opacity = "";
       toastEl.removeAttribute("tabindex");
-      // フォーカスを戻す（元の要素があれば）
+      // Return focus to the previous element if it exists
       if (prevFocus && typeof prevFocus.focus === "function") {
         prevFocus.focus();
       }

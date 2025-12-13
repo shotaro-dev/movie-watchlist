@@ -275,8 +275,8 @@ function showToast(message = "Movie added to watchlist!") {
       if (prevFocus && typeof prevFocus.focus === "function") {
         prevFocus.focus();
       }
-    }, FADE_DURATION);
-  }, TOAST_DURATION);
+    }, CONFIG.FADE_DURATION);
+  }, CONFIG.TOAST_DURATION);
 }
 
 //for  debug

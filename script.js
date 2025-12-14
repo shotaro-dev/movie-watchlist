@@ -47,7 +47,7 @@ function renderMovie(movie, isWatchlist = false) {
   const [num, unit] = Runtime.split(" ");
 
   const buttonCommonClass =
-    "pr-3  absolute bottom-2 right-6 z-50 flex items-center ml-auto hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white";
+    "pr-3  absolute bottom-2 right-2 z-50 flex items-center ml-auto hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white";
   const spanCommonClass = "w-10 h-10 inline-block";
   const buttonHtml = isWatchlist
     ? `<button data-id='${imdbID}' aria-label="Remove ${Title} from watchlist" class="removeWatchlist-btn ${buttonCommonClass}"><span class="${spanCommonClass}">${minusIcon}</span> Remove</button>`

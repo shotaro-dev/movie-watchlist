@@ -252,8 +252,14 @@ function sanitizeInput(input) {
     .replace(/on\w+="[^"]*"/gi, "");
 }
 
+let toastTimeoutId = null;
+let fadeTimeoutId = null;
+
 function showToast(message = "Movie added to watchlist!") {
   if (!toastEl) return;
+  // Clear any existing timeouts
+  if (toastTimeoutId) clearTimeout(toastTimeoutId);
+  if (fadeTimeoutId) clearTimeout(fadeTimeoutId);
   toastEl.textContent = message;
   toastEl.classList.remove("hidden");
   toastEl.style.opacity = "1";
@@ -261,9 +267,9 @@ function showToast(message = "Movie added to watchlist!") {
   const prevFocus = document.activeElement;
   toastEl.setAttribute("tabindex", "-1");
   toastEl.focus();
-  setTimeout(() => {
+  toastTimeoutId = setTimeout(() => {
     toastEl.style.opacity = "0";
-    setTimeout(() => {
+    fadeTimeoutId = setTimeout(() => {
       toastEl.classList.add("hidden");
       toastEl.style.opacity = "";
       toastEl.removeAttribute("tabindex");
@@ -276,4 +282,4 @@ function showToast(message = "Movie added to watchlist!") {
 }
 
 //for  debug
-// localStorage.clear();
+localStorage.clear();

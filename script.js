@@ -282,4 +282,4 @@ function showToast(message = "Movie added to watchlist!") {
 }
 
 //for  debug
-localStorage.clear();
+// localStorage.clear();

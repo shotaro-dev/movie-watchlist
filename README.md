@@ -8,9 +8,7 @@ This project is based on [Scrimba](https://scrimba.com/) solo project.
 
 [![View on Vercel](https://img.shields.io/badge/View_on-Vercel-black?style=for-the-badge&logo=vercel&logoColor=white)](https://movie-watchlist-omega-seven.vercel.app/)
 
-
-
-
+### Screen shot
 <img src="./images/movie-watchlist_screenshot.webp" width="50%" alt="Movie Watchlist Screenshot">
 
 ## How this project was built

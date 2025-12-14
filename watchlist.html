@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie Watchlist - Watchlist</title>
-    <meta name="description" content="View and manage your saved movie watchlist. Keep track of films you want to watch and remove completed ones." />
+    <meta
+      name="description"
+      content="View and manage your saved movie watchlist. Keep track of films you want to watch and remove completed ones."
+    />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="script.js" defer></script>
   </head>
@@ -49,22 +52,33 @@
         <h2 id="watchlist-heading" class="sr-only">My Watchlist</h2>
         <div id="watchlist-message" role="status" aria-live="assertive"></div>
         <ul
-          class="grid grid-cols-1 sm:grid-cols-[repeat(auto-fill,minmax(450px,1fr))] gap-4"
+          class="grid grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-4"
           id="watchlist-container"
         ></ul>
       </section>
     </main>
-    <footer class="bg-slate-200 dark:bg-slate-700 p-4 text-center text-sm text-slate-600 dark:text-slate-400">
-      <p>&copy; 2025 Movie Watchlist | Powered by <a href="https://www.omdbapi.com/" target="_blank" rel="noopener noreferrer" class="hover:underline">OMDB API</a></p>
-      <p><a href="https://github.com/shotaro-dev/movie-watchlist" target="_blank" rel="noopener noreferrer" class="hover:underline">View on GitHub</a></p>
+    <footer
+      class="bg-slate-200 dark:bg-slate-700 p-4 text-center text-sm text-slate-600 dark:text-slate-400"
+    >
+      <p>
+        &copy; 2025 Movie Watchlist | Powered by
+        <a
+          href="https://www.omdbapi.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:underline"
+          >OMDB API</a
+        >
+      </p>
+      <p>
+        <a
+          href="https://github.com/shotaro-dev/movie-watchlist"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:underline"
+          >View on GitHub</a
+        >
+      </p>
     </footer>
-    <!-- toast -->
-    <div
-      id="toast"
-      role="status"
-      aria-live="polite"
-      class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-blue-500/80 dark:bg-blue-400/80 text-white dark:text-slate-900 px-6 py-3 rounded shadow-lg z-50 hidden transition-opacity duration-300"
-    ></div>
-    <!-- toast -->
   </body>
 </html>

@@ -47,7 +47,7 @@ function renderMovie(movie, isWatchlist = false) {
   const [num, unit] = Runtime.split(" ");
 
   const buttonCommonClass =
-    "pr-2 flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white";
+    "pr-3  absolute bottom-2 right-6 z-50 flex items-center ml-auto hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white";
   const spanCommonClass = "w-10 h-10 inline-block";
   const buttonHtml = isWatchlist
     ? `<button data-id='${imdbID}' aria-label="Remove ${Title} from watchlist" class="removeWatchlist-btn ${buttonCommonClass}"><span class="${spanCommonClass}">${minusIcon}</span> Remove</button>`
@@ -55,23 +55,25 @@ function renderMovie(movie, isWatchlist = false) {
 
   return `
     <li>
-      <article class="flex justify-start items-center p-4 rounded mb-4 overflow-hidden bg-white dark:bg-slate-800 shadow-sm">
-        <img src="${posterSrc}" alt="Poster of ${Title}" class=" max-w-40  object-cover aspect-[2/3] rounded " onerror="this.onerror=null;this.src='${placeholderPoster}';" />
-        <div class="ml-4 grow">
+      <article class="relative flex items-center p-4 rounded mb-4 overflow-hidden bg-white dark:bg-slate-800 shadow-sm min-h-[300px]">
+        <img src="${posterSrc}" alt="Poster of ${Title}" class="max-w-40 object-cover aspect-[2/3] rounded" onerror="this.onerror=null;this.src='${placeholderPoster}';" />
+        <div class="ml-4 grow mb-auto">
+          <div >
             <div class="flex justify-start items-baseline gap-2 mb-2">
-                <h3 class="text-xl line-clamp-2 font-bold dark:text-white">${Title}</h3>
-                <p class="dark:text-slate-300"><span class="text-yellow-500">★</span><span class="font-mono ">${imdbRating}</span></p>
+              <h3 class="text-xl line-clamp-2 font-bold dark:text-white">${Title}</h3>
+              <p class="dark:text-slate-300"><span class="text-yellow-500">★</span><span class="font-mono">${imdbRating}</span></p>
             </div>
-            <div class="flex justify-between items-center  mb-2 gap-3">
-                <p class="dark:text-slate-300"><span class="font-mono">${num}</span>${
+            <div class="flex justify-start items-center mb-2 gap-3">
+              <p class="dark:text-slate-300"><span class="font-mono">${num}</span>${
     unit ? " " + unit : ""
   }</p>
-                <p class="dark:text-slate-300">${Genre}</p>
-                ${buttonHtml}
+              <p class="dark:text-slate-300">${Genre}</p>
             </div>
-            
             <p class="line-clamp-4 dark:text-slate-400">${Plot}</p>
+          </div>
         </div>
+          ${buttonHtml}
+
       </article>
     </li>
   `;
@@ -256,6 +258,7 @@ let toastTimeoutId = null;
 let fadeTimeoutId = null;
 
 function showToast(message = "Movie added to watchlist!") {
+  console.log("showToast called with message:", message);
   if (!toastEl) return;
   // Clear any existing timeouts
   if (toastTimeoutId) clearTimeout(toastTimeoutId);
@@ -282,4 +285,4 @@ function showToast(message = "Movie added to watchlist!") {
 }
 
 //for  debug
-localStorage.clear();
+// localStorage.clear();

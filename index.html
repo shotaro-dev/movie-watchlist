@@ -49,14 +49,14 @@
         <h2 id="search-heading" class="sr-only">Search movies</h2>
         <form
           id="search-form"
-          class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex h-12 shadow-lg rounded-md overflow-hidden"
+          class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 flex h-12 shadow-lg rounded-md overflow-hidden w-full max-w-sm md:max-w-lg"
         >
           <div
             aria-hidden="true"
-            class="flex items-center justify-center bg-slate-100 dark:bg-slate-700 px-3"
+            class="flex items-center justify-center bg-slate-100 dark:bg-slate-700 px-2 sm:px-3"
           >
             <svg
-              class="w-8 h-8 fill-slate-400 dark:fill-slate-300"
+              class="w-6 h-6 md:w-8 md:h-8 fill-slate-400 dark:fill-slate-300"
               viewBox="0 0 100 100"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -72,12 +72,12 @@
             type="search"
             id="search-input"
             placeholder="Search for movies..."
-            class="flex-1 px-4 py-2 outline-none focus:ring-2 focus:ring-blue-400 min-w-[300px] dark:bg-slate-800 dark:text-white dark:placeholder-slate-400"
+            class="flex-1 px-2 md:px-4 py-2 outline-none focus:ring-2 focus:ring-blue-400 min-w-0 dark:bg-slate-800 dark:text-white dark:placeholder-slate-400"
           />
 
           <button
             type="submit"
-            class="bg-slate-200 hover:bg-slate-300 dark:bg-slate-600 dark:hover:bg-slate-500 px-6 font-semibold text-slate-700 dark:text-slate-100"
+            class="bg-slate-200 hover:bg-slate-300 dark:bg-slate-600 dark:hover:bg-slate-500 px-3 md:px-6 font-semibold text-slate-700 dark:text-slate-100"
           >
             Search
           </button>
@@ -92,7 +92,7 @@
         <div id="search-message" role="status" aria-live="assertive"></div>
         <ul
           id="results-container"
-          class="mt-8 grid grid-cols-[repeat(auto-fill,minmax(450px,1fr))] gap-4"
+          class="mt-8 grid grid-cols-[repeat(auto-fill,minmax(380px,1fr))] gap-4"
         ></ul>
       </section>
       <div
@@ -132,7 +132,6 @@
       aria-live="polite"
       class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-blue-500/80 dark:bg-blue-400/80 text-white dark:text-slate-900 px-6 py-3 rounded shadow-lg z-50 hidden transition-opacity duration-300"
     ></div>
-    <!-- toast -->
     <footer
       class="bg-slate-200 dark:bg-slate-700 p-4 text-center text-sm text-slate-600 dark:text-slate-400"
     >

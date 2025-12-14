@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie Watchlist - Home</title>
-    <meta name="description" content="Search and manage your personal movie watchlist. Discover new films, add favorites, and keep track of movies you want to watch." />
+    <meta
+      name="description"
+      content="Search and manage your personal movie watchlist. Discover new films, add favorites, and keep track of movies you want to watch."
+    />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="script.js" defer></script>
     <style></style>
@@ -130,5 +133,28 @@
       class="fixed bottom-8 left-1/2 -translate-x-1/2 bg-blue-500/80 dark:bg-blue-400/80 text-white dark:text-slate-900 px-6 py-3 rounded shadow-lg z-50 hidden transition-opacity duration-300"
     ></div>
     <!-- toast -->
+    <footer
+      class="bg-slate-200 dark:bg-slate-700 p-4 text-center text-sm text-slate-600 dark:text-slate-400"
+    >
+      <p>
+        &copy; 2025 Movie Watchlist | Powered by
+        <a
+          href="https://www.omdbapi.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:underline"
+          >OMDB API</a
+        >
+      </p>
+      <p>
+        <a
+          href="https://github.com/shotaro-dev/movie-watchlist"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:underline"
+          >View on GitHub</a
+        >
+      </p>
+    </footer>
   </body>
 </html>

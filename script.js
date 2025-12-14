@@ -26,7 +26,7 @@ const minusIcon = `
 </svg>`;
 
 // Fallback image for missing posters
-const placeholderPoster = "./images/evan-buchholz-z-Hu8pnt23s-unsplash.jpg";
+const placeholderPoster = "./images/evan-buchholz-z-Hu8pnt23s-unsplash.webp";
 
 const CONFIG = {
   TOAST_DURATION: 1200,

@@ -45,23 +45,13 @@ function renderMovie(movie, isWatchlist = false) {
   const posterSrc = Poster && Poster !== "N/A" ? Poster : placeholderPoster;
   // Separate to make only numbers font-mono
   const [num, unit] = Runtime.split(" ");
-  const movieObj = {
-    Title,
-    Genre,
-    Plot,
-    imdbRating,
-    Runtime,
-    Poster,
-    imdbID,
-  };
-  // console.log(movieObj);
 
-  // Since data-* attributes can only store strings, stringify with JSON.stringify and save
-  // Encode JSON string so it stays valid inside the data attribute
-  const encodedMovie = encodeURIComponent(JSON.stringify(movieObj));
+  const buttonCommonClass =
+    "pr-2 flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white";
+  const spanCommonClass = "w-10 h-10 inline-block";
   const buttonHtml = isWatchlist
-    ? `<button data-id='${imdbID}' aria-label="Remove ${Title} from watchlist" class="removeWatchlist-btn pr-2 flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white"><span class="w-10 h-10 inline-block">${minusIcon}</span> Remove</button>`
-    : `<button data-movie='${encodedMovie}' aria-label="Add ${Title} to watchlist" class="addWatchlist-btn pr-2 flex items-center hover:opacity-75 transition-opacity duration-300 active:opacity-50 dark:text-white"><span class="w-10 h-10 inline-block">${plusIcon}</span> Watchlist</button>`;
+    ? `<button data-id='${imdbID}' aria-label="Remove ${Title} from watchlist" class="removeWatchlist-btn ${buttonCommonClass}"><span class="${spanCommonClass}">${minusIcon}</span> Remove</button>`
+    : `<button data-id='${imdbID}' aria-label="Add ${Title} to watchlist" class="addWatchlist-btn ${buttonCommonClass}"><span class="${spanCommonClass}">${plusIcon}</span> Watchlist</button>`;
 
   return `
     <li>
@@ -144,8 +134,6 @@ async function fetchMovies() {
       })
     );
 
-
-
     resultsEl.innerHTML = "";
     searchMessageEl.innerHTML = "";
 
@@ -158,10 +146,18 @@ async function fetchMovies() {
     //   console.log(addToWatchlistBtns);
     if (addToWatchlistBtns) {
       addToWatchlistBtns.forEach((btn) => {
-        btn.addEventListener("click", () => {
-          const movieData = btn.dataset.movie;
-          const movieObj = JSON.parse(decodeURIComponent(movieData));
-          saveToWatchlist(movieObj);
+        btn.addEventListener("click", async () => {
+          const imdbID = btn.dataset.id;
+          try {
+            const detailsUrl = `${baseUrl}?apikey=${API}&i=${imdbID}`;
+            const response = await fetch(detailsUrl);
+            if (!response.ok) throw new Error(`API error: ${response.status}`);
+            const movieObj = await response.json();
+            saveToWatchlist(movieObj);
+          } catch (error) {
+            console.error("Error fetching movie details:", error);
+            showToast("Failed to add movie. Try again.");
+          }
         });
       });
     }
@@ -252,7 +248,7 @@ function sanitizeInput(input) {
   div.textContent = input;
   // Additional: Remove script tags and on* attributes (simple version)
   return div.innerHTML
-    .replace(/<script[^>]*>.*?<\/script>/gi, "") 
+    .replace(/<script[^>]*>.*?<\/script>/gi, "")
     .replace(/on\w+="[^"]*"/gi, "");
 }
 
